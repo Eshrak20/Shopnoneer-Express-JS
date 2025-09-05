@@ -8,79 +8,83 @@ import { UpazilaModel } from "./upazila.model";
 import { Role } from "../user/user.interface";
 
 const createUpazila = async (payload: Partial<IUpazila>) => {
-  const { name, nameBn, code, ...rest } = payload;
+    const { name, nameBn, code, ...rest } = payload;
 
-  const isUpazilaExist = await UpazilaModel.findOne({ code });
-  if (isUpazilaExist) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Upazila already exists.");
-  }
+    const isUpazilaExist = await UpazilaModel.findOne({ code });
+    if (isUpazilaExist) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Upazila already exists.");
+    }
 
-  const upazila = await UpazilaModel.create({
-    name,
-    nameBn,
-    code,
-    ...rest,
-  });
+    const upazila = await UpazilaModel.create({
+        name,
+        nameBn,
+        code,
+        ...rest,
+    });
 
-  return upazila;
+    return upazila;
 };
 
 const updateUpazila = async (
-  code: string,
-  payload: Partial<IUpazila>,
-  decodedToken: JwtPayload
+    code: string,
+    payload: Partial<IUpazila>,
+    decodedToken: JwtPayload
 ) => {
-  const ifUpazilaExist = await UpazilaModel.findOne({ code });
+    const ifUpazilaExist = await UpazilaModel.findOne({ code });
 
-  if (!ifUpazilaExist) {
-    throw new AppError(httpStatus.NOT_FOUND, "Upazila Not Found");
-  }
+    if (!ifUpazilaExist) {
+        throw new AppError(httpStatus.NOT_FOUND, "Upazila Not Found");
+    }
 
-  if (decodedToken.role !== Role.ADMIN) {
-    throw new AppError(httpStatus.FORBIDDEN, "Only Admin Can update upazila");
-  }
+    if (decodedToken.role !== Role.ADMIN) {
+        throw new AppError(httpStatus.FORBIDDEN, "Only Admin Can update upazila");
+    }
 
-  const updatedUpazila = await UpazilaModel.findOneAndUpdate(
-    { code },
-    payload,
-    { new: true, runValidators: true }
-  );
+    const updatedUpazila = await UpazilaModel.findOneAndUpdate(
+        { code },
+        payload,
+        { new: true, runValidators: true }
+    );
 
-  return updatedUpazila;
+    return updatedUpazila;
 };
 
 const getAllUpazila = async (query: Record<string, any>) => {
-  const baseQuery = UpazilaModel.find({});
-  const queryBuilder = new QueryBuilder(baseQuery, query);
+    const baseQuery = UpazilaModel.find()
+        .populate({
+            path: "district",          // populate district
+            select: "name nameBn code", // fields to include
+        });
+    const queryBuilder = new QueryBuilder(baseQuery, query);
 
-  const userQuery = queryBuilder
-    .search(["name", "nameBn", "code"])
-    .filter()
-    .sort()
-    .fields()
-    .paginate();
+    const userQuery = queryBuilder
+        .search(["name", "nameBn", "code"])
+        .filter()
+        .sort()
+        .fields()
+        .paginate();
 
-  const [data, meta] = await Promise.all([
-    userQuery.build(),
-    queryBuilder.getMeta(),
-  ]);
+    const [data, meta] = await Promise.all([
+        userQuery.build(),
+        queryBuilder.getMeta(),
+    ]);
 
-  return { data, meta };
+    return { data, meta };
 };
 
 const getSingleUpazila = async (upazilaCode: string | number) => {
-  const upazila = await UpazilaModel.findOne({ code: upazilaCode });
+    const upazila = await UpazilaModel.findOne({ code: upazilaCode });
 
-  if (!upazila) {
-    throw new Error("Upazila not found");
-  }
+    if (!upazila) {
+        throw new Error("Upazila not found");
+    }
 
-  return upazila;
+    return upazila;
 };
 
 export const UpazilaServices = {
-  createUpazila,
-  updateUpazila,
-  getAllUpazila,
-  getSingleUpazila,
+    createUpazila,
+    updateUpazila,
+    getAllUpazila,
+    getSingleUpazila,
 };

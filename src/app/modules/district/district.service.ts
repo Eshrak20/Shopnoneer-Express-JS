@@ -8,79 +8,83 @@ import { DistrictModel } from "./district.model";
 import { Role } from "../user/user.interface";
 
 const createDistrict = async (payload: Partial<IDistrict>) => {
-  const { name, nameBn, code, ...rest } = payload;
+    const { name, nameBn, code, ...rest } = payload;
 
-  const isDistrictExist = await DistrictModel.findOne({ code });
-  if (isDistrictExist) {
-    throw new AppError(httpStatus.BAD_REQUEST, "District already exists.");
-  }
+    const isDistrictExist = await DistrictModel.findOne({ code });
+    if (isDistrictExist) {
+        throw new AppError(httpStatus.BAD_REQUEST, "District already exists.");
+    }
 
-  const district = await DistrictModel.create({
-    name,
-    nameBn,
-    code,
-    ...rest,
-  });
+    const district = await DistrictModel.create({
+        name,
+        nameBn,
+        code,
+        ...rest,
+    });
 
-  return district;
+    return district;
 };
 
 const updateDistrict = async (
-  code: string,
-  payload: Partial<IDistrict>,
-  decodedToken: JwtPayload
+    code: string,
+    payload: Partial<IDistrict>,
+    decodedToken: JwtPayload
 ) => {
-  const ifDistrictExist = await DistrictModel.findOne({ code });
+    const ifDistrictExist = await DistrictModel.findOne({ code });
 
-  if (!ifDistrictExist) {
-    throw new AppError(httpStatus.NOT_FOUND, "District Not Found");
-  }
+    if (!ifDistrictExist) {
+        throw new AppError(httpStatus.NOT_FOUND, "District Not Found");
+    }
 
-  if (decodedToken.role !== Role.ADMIN) {
-    throw new AppError(httpStatus.FORBIDDEN, "Only Admin Can update district");
-  }
+    if (decodedToken.role !== Role.ADMIN) {
+        throw new AppError(httpStatus.FORBIDDEN, "Only Admin Can update district");
+    }
 
-  const updatedDistrict = await DistrictModel.findOneAndUpdate(
-    { code },
-    payload,
-    { new: true, runValidators: true }
-  );
+    const updatedDistrict = await DistrictModel.findOneAndUpdate(
+        { code },
+        payload,
+        { new: true, runValidators: true }
+    );
 
-  return updatedDistrict;
+    return updatedDistrict;
 };
 
 const getAllDistrict = async (query: Record<string, any>) => {
-  const baseQuery = DistrictModel.find({});
-  const queryBuilder = new QueryBuilder(baseQuery, query);
+    const baseQuery = DistrictModel.find()
+        .populate({
+            path: "division",          
+            select: "name nameBn code",
+        });
 
-  const userQuery = queryBuilder
-    .search(["name", "nameBn", "code"])
-    .filter()
-    .sort()
-    .fields()
-    .paginate();
+    const queryBuilder = new QueryBuilder(baseQuery, query);
+    const userQuery = queryBuilder
+        .search(["name", "nameBn", "code"])
+        .filter()
+        .sort()
+        .fields()
+        .paginate();
 
-  const [data, meta] = await Promise.all([
-    userQuery.build(),
-    queryBuilder.getMeta(),
-  ]);
+    const [data, meta] = await Promise.all([
+        userQuery.build(),
+        queryBuilder.getMeta(),
+    ]);
 
-  return { data, meta };
+    return { data, meta };
 };
 
 const getSingleDistrict = async (districtCode: string | number) => {
-  const district = await DistrictModel.findOne({ code: districtCode });
+    const district = await DistrictModel.findOne({ code: districtCode });
 
-  if (!district) {
-    throw new Error("District not found");
-  }
+    if (!district) {
+        throw new Error("District not found");
+    }
 
-  return district;
+    return district;
 };
 
 export const DistrictServices = {
-  createDistrict,
-  updateDistrict,
-  getAllDistrict,
-  getSingleDistrict,
+    createDistrict,
+    updateDistrict,
+    getAllDistrict,
+    getSingleDistrict,
 };
