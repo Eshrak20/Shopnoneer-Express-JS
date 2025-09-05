@@ -7,11 +7,15 @@ const validateRequest_1 = require("../../middlewares/validateRequest");
 const user_validation_1 = require("./user.validation");
 const checkAuth_1 = require("../../middlewares/checkAuth");
 const user_interface_1 = require("./user.interface");
+const multer_config_1 = require("../../config/multer.config");
 const router = (0, express_1.Router)();
 router.post("/register", (0, validateRequest_1.validateRequest)(user_validation_1.createUserZodSchema), user_controller_1.UserControllers.createUser);
 router.get("/my-profile", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), user_controller_1.UserControllers.myProfile);
 router.get("/all-users", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN, user_interface_1.Role.USER), user_controller_1.UserControllers.getAllUsers);
 router.get("/all-agents", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), user_controller_1.UserControllers.getAllAgents);
 router.patch("/update-profile", (0, validateRequest_1.validateRequest)(user_validation_1.updateUserZodSchema), (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), user_controller_1.UserControllers.updateProfile);
+router.patch("/update-profile-image", 
+// validateRequest(updateUserZodSchema),
+(0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), multer_config_1.multerUpload.single("file"), user_controller_1.UserControllers.updateProfileImage);
 router.patch("/:id", (0, validateRequest_1.validateRequest)(user_validation_1.updateUserRoleAndStatusZodSchema), (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), user_controller_1.UserControllers.updateUserRoleAndStatus);
 exports.UserRoutes = router;

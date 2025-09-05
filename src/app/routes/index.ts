@@ -2,6 +2,8 @@ import { Router } from "express";
 import { UserRoutes } from "../modules/user/user.route";
 import { AuthRoutes } from "../modules/auth/auth.route";
 import { DivisionRoutes } from "../modules/division/division.route";
+import { DistrictRoutes } from "../modules/district/district.routes";
+import { UpazilaRoutes } from "../modules/upazila/upazila.routes";
 
 export const router = Router();
 
@@ -17,6 +19,14 @@ const moduleRoutes = [
   {
     path: "/div",
     route: DivisionRoutes,
+  },
+  {
+    path: "/dist",
+    route: DistrictRoutes,
+  },
+  {
+    path: "/upazila",
+    route: UpazilaRoutes,
   },
 ];
 

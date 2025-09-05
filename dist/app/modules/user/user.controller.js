@@ -50,6 +50,19 @@ const updateProfile = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter
         data: user,
     });
 }));
+const updateProfileImage = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const payload = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path;
+    const verifiedToken = req.user;
+    const id = verifiedToken === null || verifiedToken === void 0 ? void 0 : verifiedToken.userId;
+    const user = yield user_service_1.UserServices.updateUserProfileImage(id, payload);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: http_status_codes_1.default.CREATED,
+        message: "User Profile Photo Updated Successfully",
+        data: user,
+    });
+}));
 const getAllUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield user_service_1.UserServices.getAllUsers(req.query);
     (0, sendResponse_1.sendResponse)(res, {
@@ -88,4 +101,5 @@ exports.UserControllers = {
     getAllAgents,
     myProfile,
     updateProfile,
+    updateProfileImage,
 };

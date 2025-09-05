@@ -31,4 +31,5 @@ router.patch(
     DivisionControllers.updateDivision
 );
 
+
 export const DivisionRoutes = router;

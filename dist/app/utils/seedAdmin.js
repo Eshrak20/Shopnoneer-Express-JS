@@ -38,7 +38,6 @@ const seedSuperAdmin = () => __awaiter(void 0, void 0, void 0, function* () {
             role: user_interface_1.Role.ADMIN,
             email: env_1.envVars.ADMIN_EMAIL,
             phone: "01910203040",
-            address: "Dhaka",
             isVerified: true,
             isActive: user_interface_1.IsActive.ACTIVE,
             password: hashedPassword,

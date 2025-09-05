@@ -32,7 +32,7 @@ const AppError_1 = __importDefault(require("../../errorHelpers/AppError"));
 const user_model_1 = require("./user.model");
 const env_1 = require("../../config/env");
 const QueryBuilder_1 = require("../../utils/QueryBuilder");
-const wallet_model_1 = require("../wallet/wallet.model");
+const cloudinary_config_1 = require("../../config/cloudinary.config");
 const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, role = "USER" } = payload, rest = __rest(payload, ["email", "password", "role"]);
     if (!email || !password) {
@@ -48,12 +48,6 @@ const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         providerId: email,
     };
     const user = yield user_model_1.UserModel.create(Object.assign({ email, password: hashedPassword, role, auths: [authProvider], isActive: "ACTIVE", isVerified: true }, rest));
-    // Create wallet with initial balance ৳50
-    yield wallet_model_1.WalletModel.create({
-        user: user._id,
-        balance: 50,
-        status: "ACTIVE",
-    });
     return user;
 });
 const updateUser = (userId, payload, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
@@ -62,7 +56,7 @@ const updateUser = (userId, payload, decodedToken) => __awaiter(void 0, void 0, 
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User Not Found");
     }
     if (payload.role) {
-        if (decodedToken.role === user_interface_1.Role.USER || decodedToken.role === user_interface_1.Role.AGENT) {
+        if (decodedToken.role === user_interface_1.Role.USER || decodedToken.role === user_interface_1.Role.MODERATOR) {
             throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "You are not authorized");
         }
         if (payload.role === user_interface_1.Role.ADMIN && decodedToken.role === user_interface_1.Role.ADMIN) {
@@ -70,7 +64,7 @@ const updateUser = (userId, payload, decodedToken) => __awaiter(void 0, void 0, 
         }
     }
     if (payload.isActive || payload.isVerified) {
-        if (decodedToken.role === user_interface_1.Role.USER || decodedToken.role === user_interface_1.Role.AGENT) {
+        if (decodedToken.role === user_interface_1.Role.USER || decodedToken.role === user_interface_1.Role.MODERATOR) {
             throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "You are not authorized");
         }
     }
@@ -84,20 +78,33 @@ const updateUser = (userId, payload, decodedToken) => __awaiter(void 0, void 0, 
     });
     return newUpdatedUser;
 });
+const updateUserProfileImage = (userId, profilePhoto) => __awaiter(void 0, void 0, void 0, function* () {
+    const ifUserExist = yield user_model_1.UserModel.findById(userId);
+    if (!ifUserExist) {
+        throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User Not Found");
+    }
+    const newUpdatedUser = yield user_model_1.UserModel.findByIdAndUpdate(userId, { profilePhoto }, {
+        new: true,
+        runValidators: true,
+    });
+    if (profilePhoto && ifUserExist.profilePhoto) {
+        yield (0, cloudinary_config_1.deleteImageFromCLoudinary)(ifUserExist.profilePhoto);
+    }
+    return newUpdatedUser;
+});
 const updateUserRoleAndStatus = (userId, payload, decodedToken) => __awaiter(void 0, void 0, void 0, function* () {
     const ifUserExist = yield user_model_1.UserModel.findById(userId);
     if (!ifUserExist) {
         throw new AppError_1.default(http_status_codes_1.default.NOT_FOUND, "User Not Found");
     }
     if (ifUserExist.isActive === "BLOCKED") {
-        console.log("ami asi", ifUserExist.isActive);
         const isOnlyStatusUpdate = Object.keys(payload).length === 1 && "isActive" in payload;
         if (!isOnlyStatusUpdate) {
             throw new AppError_1.default(403, "Blocked user can only be updated to change status.");
         }
     }
     if (payload.role) {
-        if (decodedToken.role === user_interface_1.Role.USER || decodedToken.role === user_interface_1.Role.AGENT) {
+        if (decodedToken.role === user_interface_1.Role.USER || decodedToken.role === user_interface_1.Role.MODERATOR) {
             throw new AppError_1.default(http_status_codes_1.default.FORBIDDEN, "You are not authorized");
         }
         if (payload.role === user_interface_1.Role.ADMIN && decodedToken.role === user_interface_1.Role.ADMIN) {
@@ -122,7 +129,7 @@ const myProfile = (id) => __awaiter(void 0, void 0, void 0, function* () {
     return { data: user };
 });
 const getAllUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const baseQuery = user_model_1.UserModel.find({ role: "USER" });
+    const baseQuery = user_model_1.UserModel.find({ role: user_interface_1.Role.USER });
     const queryBuilder = new QueryBuilder_1.QueryBuilder(baseQuery, query);
     const userQuery = queryBuilder
         .search(["phone", "email", "address"]) // only string fields
@@ -137,7 +144,7 @@ const getAllUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
     return { data, meta };
 });
 const getAllAgents = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const baseQuery = user_model_1.UserModel.find({ role: "AGENT" });
+    const baseQuery = user_model_1.UserModel.find({ role: user_interface_1.Role.MODERATOR });
     const queryBuilder = new QueryBuilder_1.QueryBuilder(baseQuery, query);
     const userQuery = queryBuilder
         .search(["phone", "email", "_id", "address", "isActive", "isVerified"])
@@ -155,6 +162,7 @@ exports.UserServices = {
     createUser,
     updateUser,
     updateUserRoleAndStatus,
+    updateUserProfileImage,
     getAllUsers,
     getAllAgents,
     myProfile,

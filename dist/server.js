@@ -43,7 +43,7 @@ process.on("SIGTERM", () => {
     process.exit(1);
 });
 process.on("SIGINT", () => {
-    console.log("SIGINT signal recieved... Server shutting down..");
+    console.log("SIGINT signal received... Server shutting down..");
     if (server) {
         server.close(() => {
             process.exit(1);

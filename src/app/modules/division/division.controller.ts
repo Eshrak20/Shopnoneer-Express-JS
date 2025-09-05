@@ -23,7 +23,6 @@ const createDivision = catchAsync(
 const updateDivision = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { code } = req.body; // string code like "DHK"
-    console.log(code)
     const payload = req.body;
     const verifiedToken = req.user as JwtUserPayload;
 
