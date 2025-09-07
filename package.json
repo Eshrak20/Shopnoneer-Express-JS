@@ -1,9 +1,10 @@
 {
-  "name": "backend-ph-tour-management-system",
+  "name": "shopnoneer-express-backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
+    "start": "node ./dist/server.js",
     "lint": "npx eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -33,7 +34,7 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "cloudinary": "^2.7.0",
+    "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",

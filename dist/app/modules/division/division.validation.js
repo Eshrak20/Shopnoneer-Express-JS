@@ -8,10 +8,7 @@ exports.isActiveEnum = zod_1.z.enum(["ACTIVE", "BLOCKED"]);
 exports.createDivisionZodSchema = zod_1.z.object({
     name: zod_1.z.string().min(1, "Name is required"),
     nameBn: zod_1.z.string().min(1, "Bangla name is required"),
-    code: zod_1.z.string().min(1, "Code is required"), // ✅ string এ করে নাও
+    code: zod_1.z.string().min(1, "Code is required"),
     isActive: exports.isActiveEnum.optional(),
-    params: zod_1.z.object({
-        code: zod_1.z.string(), // comes from URL
-    }),
 });
 exports.updateDivisionZodSchema = exports.createDivisionZodSchema.partial();

@@ -4,9 +4,10 @@ exports.handlerDuplicateError = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const handlerDuplicateError = (err) => {
     const matchedArray = err.message.match(/"([^"]*)"/);
+    const value = matchedArray ? matchedArray[1] : "Value";
     return {
         statusCode: 400,
-        message: `${matchedArray[1]} already exists!!`
+        message: `${value} already exists!!`,
     };
 };
 exports.handlerDuplicateError = handlerDuplicateError;

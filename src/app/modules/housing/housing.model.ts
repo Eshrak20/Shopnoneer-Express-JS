@@ -13,9 +13,8 @@ const housingSchema = new Schema<IHousing>(
     latitude: { type: Number },
     longitude: { type: Number },
     location: { type: String },
-    facilities: [{ type: Schema.Types.ObjectId, ref: "Facilities" }],
   },
-  { timestamps: true }
+  { timestamps: true , versionKey: false}
 );
 
 export const HousingModel = model<IHousing>("Housing", housingSchema);

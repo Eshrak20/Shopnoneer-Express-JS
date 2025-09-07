@@ -12,7 +12,6 @@ const facilitiesSchema = new Schema<IFacilities>(
     latitude: { type: Number },
     longitude: { type: Number },
     distance: { type: Number },
-    housing: [{ type: Schema.Types.ObjectId, ref: "Housing" }],
   },
   { timestamps: true }
 );

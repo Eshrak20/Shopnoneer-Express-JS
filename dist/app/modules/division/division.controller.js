@@ -28,7 +28,6 @@ const createDivision = (0, catchAsync_1.catchAsync)((req, res, next) => __awaite
 }));
 const updateDivision = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { code } = req.body; // string code like "DHK"
-    console.log(code);
     const payload = req.body;
     const verifiedToken = req.user;
     const division = yield division_service_1.DivisionServices.updateDivision(code, // pass string

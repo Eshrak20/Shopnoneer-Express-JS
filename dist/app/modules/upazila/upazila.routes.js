@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UpazilaRoutes = void 0;
+const express_1 = require("express");
+const validateRequest_1 = require("../../middlewares/validateRequest");
+const checkAuth_1 = require("../../middlewares/checkAuth");
+const user_interface_1 = require("../user/user.interface");
+const upazila_controller_1 = require("./upazila.controller");
+const upazila_validation_1 = require("./upazila.validation");
+const router = (0, express_1.Router)();
+router.post("/create-upazila", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), (0, validateRequest_1.validateRequest)(upazila_validation_1.createUpazilaZodSchema), upazila_controller_1.UpazilaControllers.createUpazila);
+router.get("/get-upazila", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), upazila_controller_1.UpazilaControllers.getSingleUpazila);
+router.get("/get-all-upazila", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), upazila_controller_1.UpazilaControllers.getAllUpazila);
+router.patch("/", (0, validateRequest_1.validateRequest)(upazila_validation_1.updateUpazilaZodSchema), (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), upazila_controller_1.UpazilaControllers.updateUpazila);
+exports.UpazilaRoutes = router;

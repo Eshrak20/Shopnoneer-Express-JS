@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DistrictRoutes = void 0;
+const express_1 = require("express");
+const validateRequest_1 = require("../../middlewares/validateRequest");
+const checkAuth_1 = require("../../middlewares/checkAuth");
+const user_interface_1 = require("../user/user.interface");
+const district_controller_1 = require("./district.controller");
+const district_validation_1 = require("./district.validation");
+const router = (0, express_1.Router)();
+router.post("/create-district", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), (0, validateRequest_1.validateRequest)(district_validation_1.createDistrictZodSchema), district_controller_1.DistrictControllers.createDistrict);
+router.get("/get-district", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), district_controller_1.DistrictControllers.getSingleDistrict);
+router.get("/get-all-district", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), district_controller_1.DistrictControllers.getAllDistrict);
+router.patch("/", (0, validateRequest_1.validateRequest)(district_validation_1.updateDistrictZodSchema), (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), district_controller_1.DistrictControllers.updateDistrict);
+exports.DistrictRoutes = router;
