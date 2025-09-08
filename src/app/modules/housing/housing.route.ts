@@ -21,7 +21,7 @@ router.get(
 
 router.get(
   "/get-all-housing",
-  checkAuth(Role.ADMIN),
+  checkAuth(Role.ADMIN,Role.USER),
   HousingControllers.getAllHousing
 );
 

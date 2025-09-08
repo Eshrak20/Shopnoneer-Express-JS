@@ -1,98 +1,80 @@
-# 💳 Digital Wallet Management System - Backend
+# 🏠 Shopnoneer Express Backend
 
-> A secure and scalable RESTful API for managing digital wallet operations with role-based access control.
+> A modern, scalable **RESTful API** for managing properties, authentication, and file uploads for the **Shopnoneer** platform.
 
 ---
 
 ## 📌 Quick Links
 
-- 🎥 [Overview Video](https://youtu.be/SxR3mZe1f4w)
-- 🌐 [Live Demo](https://digital-wallet-express.vercel.app)
-- 🧠 [ER Diagram](https://app.diagrams.net/#G1NwZgAjGcmpDStBbkpPmh9PDvfIgiUDdm#%7B%22pageId%22%3A%22eF3NUIgkCKxadYA2YhTe%22%7D)
+- 🌐 **Backend Live API:** [https://shopnoneer-express-js.vercel.app](https://shopnoneer-express-js.vercel.app)  
+- 💻 **Frontend Live:** [https://shopnoneer.netlify.app](https://shopnoneer.netlify.app)  
+- 📦 **GitHub Repo:** *[Add your repo link here]*  
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **🧠 Backend:** **Node.js**, **Express**, **TypeScript**
-- **🗄️ Database:** **MongoDB** with **Mongoose**
-- **🔐 Authentication:** **JWT**, **Session**, **Passport.js**
-- **✅ Validation:** **Zod**
-- **🧹 Code Quality:** **ESLint**, **Prettier**
+- **⚙️ Backend:** Node.js, Express, TypeScript  
+- **🗄️ Database:** MongoDB + Mongoose  
+- **🔐 Authentication:** JWT, Sessions, Passport.js (Google OAuth + Local)  
+- **☁️ File Uploads:** Multer + Cloudinary  
+- **✅ Validation:** Zod  
+- **🧹 Code Quality:** ESLint, TypeScript-ESLint  
 
-## Clone the repository
+---
 
-git clone https://github.com/your-username/backend-digital-wallet.git
-cd backend-digital-wallet
+## 🚀 Getting Started
 
-## Install dependencies
-
+### Clone the repository
+```bash
+git clone <your-repo-url>
+cd shopnoneer-express-backend
 npm install
-
-## Run in development
-
 npm run dev
+npm run build
+PORT=5000
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_jwt_secret
+SESSION_SECRET=your_session_secret
 
-## 🔀 API Endpoints
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 
-### 👤 User Routes
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+| Method | Endpoint                     | Access  | Description            |
+| ------ | ---------------------------- | ------- | ---------------------- |
+| POST   | `/auth/register`             | Public  | Register new user      |
+| POST   | `/auth/login`                | Public  | Login with email/pass  |
+| GET    | `/auth/google`               | Public  | Google OAuth login     |
+| PATCH  | `/user/update-profile`       | Private | Update profile info    |
+| PATCH  | `/user/update-profile-image` | Private | Update profile picture |
 
-| Method | Endpoint           | Access | Description         |
-| ------ | ------------------ | ------ | ------------------- |
-| POST   | `/user/register`   | Public | Register new user   |
-| PATCH  | `/user/update`     | Admin  | Update user details |
-| GET    | `/user/all-users`  | Admin  | Get all users       |
-| GET    | `/user/all-agents` | Admin  | Get all agents      |
 
-### 💼 Wallet Routes
+| Method | Endpoint           | Access | Description          |
+| ------ | ------------------ | ------ | -------------------- |
+| POST   | `/property/create` | Admin  | Create new property  |
+| GET    | `/property/all`    | Public | Get all properties   |
+| GET    | `/property/:id`    | Public | Get property details |
+| PATCH  | `/property/:id`    | Admin  | Update property info |
+| DELETE | `/property/:id`    | Admin  | Delete property      |
+| Method | Endpoint       | Access  | Description          |
+| ------ | -------------- | ------- | -------------------- |
+| POST   | `/upload/file` | Private | Upload file to Cloud |
 
-| Method | Endpoint                 | Access     | Description                |
-| ------ | ------------------------ | ---------- | -------------------------- |
-| POST   | `/wallet/add`            | Agent      | Add money to user wallet   |
-| POST   | `/wallet/withdraw`       | User       | Withdraw money from wallet |
-| POST   | `/wallet/transfer-money` | User       | Transfer money to another  |
-| GET    | `/wallet/all-wallet`     | Admin      | View all wallets           |
-| GET    | `/wallet/my-wallet`      | User/Agent | View own wallet            |
-| PATCH  | `/wallet/:id`            | Admin      | Update wallet info         |
 
-### 💳 Transaction Routes
+| Folder/File            | Path                        | Description                                     |
+| ---------------------- | --------------------------- | ----------------------------------------------- |
+| `app/modules/auth`     | `src/app/modules/auth/`     | Authentication logic (JWT, Google OAuth, Local) |
+| `app/modules/user`     | `src/app/modules/user/`     | User controllers & services                     |
+| `app/modules/property` | `src/app/modules/property/` | Property CRUD operations                        |
+| `app/middlewares`      | `src/app/middlewares/`      | Auth & error middlewares                        |
+| `config`               | `src/config/`               | DB & environment configs                        |
+| `utils`                | `src/utils/`                | Utility helpers                                 |
+| `server.ts`            | `src/server.ts`             | Main entry point                                |
 
-| Method | Endpoint                   | Access     | Description             |
-| ------ | -------------------------- | ---------- | ----------------------- |
-| GET    | `/trans/all-transactions`  | Admin      | All system transactions |
-| GET    | `/trans/your-transactions` | User       | Your own transactions   |
 
-### 💰 Commission Routes
 
-| Method | Endpoint             | Access | Description            |
-| ------ | -------------------- | ------ | ---------------------- |
-| GET    | `/com/all-agent-com` | Admin  | All commissions data   |
-| GET    | `/com/agent-com`     | Agent  | My commission earnings |
+Do you also want me to include **example API request/response (like sample `POST /auth/login` body & response)** inside the README for quick testing?
 
-## 📁 Project Structure
-
-| Folder/File               | Path                           | Description                |
-| ------------------------- | ------------------------------ | -------------------------- |
-| `app/modules/user`        | `src/app/modules/user/`        | User controllers, services |
-| `app/modules/auth`        | `src/app/modules/auth/`        | Authentication logic       |
-| `app/modules/wallet`      | `src/app/modules/wallet/`      | Wallet operations          |
-| `app/modules/transaction` | `src/app/modules/transaction/` | Transaction handling       |
-| `app/modules/commission`  | `src/app/modules/commission/`  | Commission system          |
-| `app/middlewares`         | `src/app/middlewares/`         | Custom middleware          |
-| `config`                  | `src/config/`                  | Configuration files        |
-| `utils`                   | `src/utils/`                   | Utility functions          |
-| `server.ts`               | `src/server.ts`                | Server entry point         |
-
-<!-- src/
-├── app/
-│   ├── modules/
-│   │   ├── user/          # User controllers, services
-│   │   ├── auth/          # Authentication logic
-│   │   ├── wallet/        # Wallet operations
-│   │   ├── transaction/   # Transaction handling
-│   │   └── commission/    # Commission system
-│   └── middlewares/       # Custom middleware
-├── config/                # Configuration files
-├── utils/                 # Utility functions
-└── server.ts              # Server entry point -->
-# Shopnoneer-Express-JS

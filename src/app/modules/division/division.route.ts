@@ -20,7 +20,7 @@ router.get(
 );
 router.get(
     "/get-all-division",
-    checkAuth(Role.ADMIN),
+    checkAuth(Role.ADMIN,Role.USER),
     DivisionControllers.getAllDivision
 );
 

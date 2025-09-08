@@ -22,7 +22,7 @@ router.get(
 
 router.get(
   "/get-all-district",
-  checkAuth(Role.ADMIN),
+  checkAuth(Role.ADMIN, Role.USER),
   DistrictControllers.getAllDistrict
 );
 

@@ -22,7 +22,7 @@ router.get(
 
 router.get(
   "/get-all-upazila",
-  checkAuth(Role.ADMIN),
+  checkAuth(Role.ADMIN, Role.USER),
   UpazilaControllers.getAllUpazila
 );
 
